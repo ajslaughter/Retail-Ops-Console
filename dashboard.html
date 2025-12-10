@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -58,7 +59,8 @@
         }
 
         .logo::before {
-            content: '🔔'; /* Simple bell icon */
+            content: '🔔';
+            /* Simple bell icon */
             filter: drop-shadow(0 0 5px var(--accent-gold));
         }
 
@@ -72,7 +74,8 @@
             border-left: 3px solid transparent;
         }
 
-        .nav-item:hover, .nav-item.active {
+        .nav-item:hover,
+        .nav-item.active {
             background-color: rgba(0, 212, 255, 0.1);
             color: var(--accent-blue);
             border-left-color: var(--accent-blue);
@@ -128,8 +131,15 @@
             box-shadow: 0 0 5px currentColor;
         }
 
-        .status-dot.active { background-color: var(--success); color: var(--success); }
-        .status-dot.idle { background-color: var(--accent-gold); color: var(--accent-gold); }
+        .status-dot.active {
+            background-color: var(--success);
+            color: var(--success);
+        }
+
+        .status-dot.idle {
+            background-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
 
         /* Action Grid */
         .action-grid {
@@ -247,9 +257,17 @@
             animation: fadeIn 0.2s forwards;
         }
 
-        .log-entry.error { color: var(--danger); }
-        .log-entry.info { color: var(--accent-blue); }
-        .log-entry.system { color: var(--text-secondary); }
+        .log-entry.error {
+            color: var(--danger);
+        }
+
+        .log-entry.info {
+            color: var(--accent-blue);
+        }
+
+        .log-entry.system {
+            color: var(--text-secondary);
+        }
 
         .cursor {
             display: inline-block;
@@ -260,11 +278,32 @@
             vertical-align: middle;
         }
 
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes blink {
 
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <div class="sidebar">
@@ -280,13 +319,13 @@
         <div class="header">
             <h1>Retail Operations Command Center</h1>
             <div class="status-bar">
-                <div class="status-widget">
-                    <div class="status-dot active"></div>
-                    SharePoint Online: Active
+                <div class="status-widget" id="sp-status-widget">
+                    <div class="status-dot" id="sp-status-dot"></div>
+                    <span id="sp-status-text">SharePoint Online: Checking...</span>
                 </div>
-                <div class="status-widget">
-                    <div class="status-dot idle"></div>
-                    Report Server: Idle
+                <div class="status-widget" id="rs-status-widget">
+                    <div class="status-dot" id="rs-status-dot"></div>
+                    <span id="rs-status-text">Report Server: Checking...</span>
                 </div>
             </div>
         </div>
@@ -296,9 +335,11 @@
             <div class="action-card">
                 <div>
                     <div class="card-title">SharePoint Cleanup</div>
-                    <div class="card-desc">Archive and delete list items older than 90 days. Exports CSV backup before deletion.</div>
+                    <div class="card-desc">Archive and delete list items older than 90 days. Exports CSV backup before
+                        deletion.</div>
                 </div>
-                <button class="btn-action" onclick="runTask('Archive SharePoint', 'Connecting to PnP Online...', 2000)">Execute Archive</button>
+                <button class="btn-action" onclick="triggerApi('/api/run-archive', 'Archive SharePoint')">Execute
+                    Archive</button>
             </div>
 
             <!-- Card 2 -->
@@ -307,25 +348,31 @@
                     <div class="card-title">Weekly Cognos Burst</div>
                     <div class="card-desc">Trigger the weekly sales velocity report generation and distribution.</div>
                 </div>
-                <button class="btn-action" onclick="runTask('Cognos Burst', 'Authenticating with Cognos Gateway...', 3000)">Trigger Burst</button>
+                <button class="btn-action" onclick="triggerApi('/api/run-cognos', 'Cognos Burst')">Trigger
+                    Burst</button>
             </div>
 
             <!-- Card 3 -->
             <div class="action-card">
                 <div>
                     <div class="card-title">Sync Branch Data</div>
-                    <div class="card-desc">Force synchronization of retail branch connectivity logs to the central dashboard.</div>
+                    <div class="card-desc">Force synchronization of retail branch connectivity logs to the central
+                        dashboard.</div>
                 </div>
-                <button class="btn-action" onclick="runTask('Branch Sync', 'Initiating data stream from 450 nodes...', 2500)">Sync Data</button>
+                <button class="btn-action"
+                    onclick="runTask('Branch Sync', 'Initiating data stream from 450 nodes...', 2500)">Sync
+                    Data</button>
             </div>
 
             <!-- Card 4 -->
             <div class="action-card">
                 <div>
                     <div class="card-title">System Health Report</div>
-                    <div class="card-desc">Generate a comprehensive diagnostic report of all server racks and services.</div>
+                    <div class="card-desc">Generate a comprehensive diagnostic report of all server racks and services.
+                    </div>
                 </div>
-                <button class="btn-action" onclick="runTask('Health Check', 'Scanning server rack heatmaps...', 1500)">Generate Report</button>
+                <button class="btn-action"
+                    onclick="runTask('Health Check', 'Scanning server rack heatmaps...', 1500)">Generate Report</button>
             </div>
         </div>
 
@@ -346,31 +393,88 @@
             const consoleOutput = document.getElementById('log-output');
             const entry = document.createElement('div');
             entry.className = `log-entry ${type}`;
-            
+
             const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
             entry.innerText = `[${timestamp}] ${message}`;
-            
+
             consoleOutput.appendChild(entry);
-            
+
             // Auto scroll to bottom
             const container = document.getElementById('console');
             container.scrollTop = container.scrollHeight;
         }
 
-        function runTask(taskName, startMessage, duration) {
-            log(`Starting task: ${taskName}...`, 'info');
-            log(startMessage);
-            
-            // Simulate processing
-            setTimeout(() => {
-                log(`Processing ${taskName}... please wait.`);
-            }, duration / 2);
+        // --- API INTEGRATION ---
 
-            setTimeout(() => {
-                log(`Task '${taskName}' completed successfully.`, 'info');
-                log(`Waiting for next command...`, 'system');
-            }, duration);
+        async function triggerApi(endpoint, taskName) {
+            log(`Starting task: ${taskName}...`, 'info');
+
+            try {
+                const response = await fetch(endpoint, { method: 'POST' });
+                const data = await response.json();
+
+                if (data.success) {
+                    log(`Task '${taskName}' completed successfully.`, 'info');
+                    if (data.output) log(data.output, 'system');
+                } else {
+                    log(`Task '${taskName}' FAILED.`, 'error');
+                    if (data.error) log(data.error, 'error');
+                }
+            } catch (err) {
+                log(`Network error triggering ${taskName}: ${err}`, 'error');
+            }
         }
+
+        // --- STATUS POLLING ---
+
+        async function updateStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+
+                // Update SharePoint Status
+                const spDot = document.getElementById('sp-status-dot');
+                const spText = document.getElementById('sp-status-text');
+
+                if (data.sharepoint_status === 'Active') {
+                    spDot.className = 'status-dot active';
+                    spText.innerText = 'SharePoint Online: Active';
+                } else {
+                    spDot.className = 'status-dot error'; // You might need to add .error style or use .idle
+                    spDot.style.backgroundColor = '#ff4d4d'; // Manual override for error
+                    spText.innerText = 'SharePoint Online: Unreachable';
+                }
+
+                // Update Report Server Status
+                const rsDot = document.getElementById('rs-status-dot');
+                const rsText = document.getElementById('rs-status-text');
+
+                if (data.report_server_status === 'Idle') {
+                    rsDot.className = 'status-dot idle';
+                    rsText.innerText = 'Report Server: Idle';
+                } else {
+                    rsDot.className = 'status-dot';
+                    rsDot.style.backgroundColor = '#ff4d4d';
+                    rsText.innerText = 'Report Server: Down';
+                }
+
+            } catch (err) {
+                // Silent fail or log debug
+                console.log("Status poll failed", err);
+            }
+        }
+
+        // Poll every 5 seconds
+        setInterval(updateStatus, 5000);
+        // Initial check
+        updateStatus();
+
+        /*
+        function runTask(taskName, startMessage, duration) {
+            // ... Legacy mock function ...
+        } 
+        */
     </script>
 </body>
+
 </html>

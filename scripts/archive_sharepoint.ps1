@@ -26,6 +26,11 @@ if (-not (Test-Path $BackupPath)) {
 Write-Host "Connecting to SharePoint Site: $SiteUrl" -ForegroundColor Cyan
 try {
     # In a real scenario, use -Interactive or -ClientId/-Thumbprint for unattended auth
+    
+    # --- UNATTENDED AUTH EXAMPLE ---
+    # Connect-PnPOnline -Url $SiteUrl -ClientId "YOUR_APP_ID" -Thumbprint "YOUR_CERT_THUMBPRINT" -Tenant "yourtenant.onmicrosoft.com"
+    # -------------------------------
+
     Connect-PnPOnline -Url $SiteUrl -Interactive -ErrorAction Stop
     Write-Host "Connected successfully." -ForegroundColor Green
 }

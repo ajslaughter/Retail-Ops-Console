@@ -20,6 +20,11 @@ def trigger_cognos_burst():
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
     
+    # PERSISTENCE UPGRADE: Use a custom profile to save cookies/login session
+    # This means you only have to log in ONCE manually, and future runs will remember you.
+    user_data_dir = os.path.join(os.getcwd(), "chrome_profile")
+    chrome_options.add_argument(f"user-data-dir={user_data_dir}")
+    
     # Set download preference
     prefs = {"download.default_directory": DOWNLOAD_DIR}
     chrome_options.add_experimental_option("prefs", prefs)
