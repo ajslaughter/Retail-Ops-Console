@@ -7,12 +7,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
 # Configuration
-PORTAL_URL = "https://reports.bellbank.internal/cognos"
-REPORT_NAME = "Weekly Sales Velocity"
-DOWNLOAD_DIR = r"C:\RetailOps\Reports"
+PORTAL_URL = "https://reports.example.internal/cognos"
+REPORT_NAME = "Weekly Operations Summary"
+DOWNLOAD_DIR = r"C:\Operations\Reports"
 
-def trigger_cognos_burst():
-    print(f"Initializing Cognos Burst Automation for: {REPORT_NAME}")
+def trigger_cognos_report():
+    print(f"Initializing Cognos report automation for: {REPORT_NAME}")
     
     # Setup Chrome Options
     chrome_options = Options()
@@ -45,9 +45,9 @@ def trigger_cognos_burst():
         # Simulate wait for heavy Cognos JS
         time.sleep(2) 
         
-        print("Navigating to 'Team Content' > 'Retail Reports'...")
+        print("Navigating to 'Team Content' > 'Operations Reports'...")
         # Placeholder for clicking through folders
-        # folder = driver.find_element(By.LINK_TEXT, "Retail Reports")
+        # folder = driver.find_element(By.LINK_TEXT, "Operations Reports")
         # folder.click()
         
         print(f"Locating report: {REPORT_NAME}...")
@@ -71,4 +71,4 @@ def trigger_cognos_burst():
         driver.quit()
 
 if __name__ == "__main__":
-    trigger_cognos_burst()
+    trigger_cognos_report()
