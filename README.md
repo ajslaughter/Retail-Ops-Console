@@ -1,72 +1,84 @@
-# Retail Operations Command Center
+# Operations Automation Console
 
-A centralized, sci-fi themed dashboard for automating Retail System Specialist tasks. This tool combines a modern web UI with powerful local automation scripts for SharePoint cleanup and Cognos reporting.
+A lightweight web console for running operations automations and monitoring service health from one place. The project ships with example integrations for SharePoint maintenance and Cognos report execution, and can be adapted to other internal workflows.
 
-## Features
+## What this project provides
 
-- **Unified Dashboard**: Single-pane-of-glass for monitoring and actions.
-- **Real-Time Status**: Live health checks for SharePoint and Report Servers.
-- **SharePoint Automation**: One-click archiving and cleanup of old list items.
-- **Cognos Automation**: Headless browser automation for generating and downloading reports.
-- **Persistent Sessions**: Smart authentication handling to minimize login prompts.
+- **Centralized task execution** for recurring operational scripts.
+- **Live status visibility** for connected upstream systems.
+- **Structured runtime logging** in the browser UI.
+- **Reference automations** for SharePoint cleanup and report generation.
+
+## Typical use cases
+
+- Scheduled or ad-hoc cleanup of aging records.
+- Triggering report jobs without opening multiple tools.
+- Capturing operational output for handoff and incident notes.
 
 ## Prerequisites
 
-Before setting up, ensure you have the following installed:
+- Python 3.9+
+- PowerShell 5.1+ (for the SharePoint script)
+- Google Chrome (for Selenium-driven report automation)
 
-1.  **Python 3.x**: [Download Python](https://www.python.org/downloads/)
-2.  **Google Chrome**: Required for the Selenium automation script.
-3.  **PowerShell 5.1+**: Pre-installed on most Windows systems.
-4.  **SharePoint PnP PowerShell**:
-    ```powershell
-    Install-Module -Name PnP.PowerShell -Scope CurrentUser
-    ```
+Optional dependency for SharePoint operations:
+
+```powershell
+Install-Module -Name PnP.PowerShell -Scope CurrentUser
+```
 
 ## Installation
 
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/ajslaughter/Retail-Ops-Console.git
-    cd Retail-Ops-Console
-    ```
+```bash
+git clone <your-repo-url>
+cd <your-project-folder>
+python -m venv venv
+# Windows
+.\venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
+pip install flask selenium
+```
 
-2.  **Create a Virtual Environment** (Recommended):
-    ```bash
-    python -m venv venv
-    .\venv\Scripts\activate
-    ```
+## Running locally
 
-3.  **Install Python Dependencies**:
-    ```bash
-    pip install flask selenium
-    ```
+Start the web application:
 
-## Usage
+```bash
+python app.py
+```
 
-1.  **Start the Server**:
-    Run the Flask application to start the backend engine.
-    ```bash
-    python app.py
-    ```
-    *You should see output indicating the server is running on http://0.0.0.0:5000*
+Open the UI at:
 
-2.  **Access the Dashboard**:
-    Open your web browser and navigate to:
-    [http://localhost:5000](http://localhost:5000)
+- `http://localhost:5000`
 
-3.  **Check System Health**:
-    To manually trigger a status update (or schedule this via Task Scheduler):
-    ```bash
-    python check_health.py
-    ```
-    *The dashboard status dots will update automatically within 5 seconds.*
+Optional: refresh status data manually:
+
+```bash
+python check_health.py
+```
 
 ## Configuration
 
-- **SharePoint**: Edit `scripts/archive_sharepoint.ps1` to set your specific Site URL and List Name.
-- **Cognos**: Edit `scripts/trigger_cognos.py` to set your Portal URL and Report Name.
-- **Chrome Profile**: The first time you run the Cognos script, you may need to log in manually. The script uses a local `chrome_profile` folder to remember your session for future runs.
+Update these files for your environment:
 
-## Security Note
+- `scripts/archive_sharepoint.ps1`
+  - Site URL
+  - List name
+  - Backup/export directory
+- `scripts/trigger_cognos.py`
+  - Portal URL
+  - Report name
+  - Download directory
 
-This application is designed for **local use** or within a secured corporate intranet. It executes shell commands on the host machine. Do not expose this server to the public internet.
+## Security and deployment guidance
+
+This tool executes host-level commands. Keep it behind trusted network boundaries and add authentication/authorization controls before broader deployment.
+
+Recommended controls for enterprise environments:
+
+- Restrict network access (private subnet / VPN / internal gateway).
+- Run with least-privileged service accounts.
+- Centralize logs and audit script execution.
+- Store secrets in environment variables or a secrets manager (not source files).
+
