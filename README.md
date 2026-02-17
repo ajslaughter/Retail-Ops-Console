@@ -1,18 +1,24 @@
 # Operations Automation Console
 
-A lightweight web console for running operations automations and monitoring service health from one place.
+A lightweight web console for running operations automations and monitoring service health from one place. The project ships with example integrations for SharePoint maintenance and Cognos report execution, and can be adapted to other internal workflows.
 
 ## What this project provides
 
-- Centralized task execution for recurring operational scripts.
-- Live status visibility for connected upstream systems.
-- Structured runtime logging in the browser UI.
-- Reference automations for content cleanup and report generation.
+- **Centralized task execution** for recurring operational scripts.
+- **Live status visibility** for connected upstream systems.
+- **Structured runtime logging** in the browser UI.
+- **Reference automations** for content cleanup and report generation.
+
+## Typical use cases
+
+- Scheduled or ad-hoc cleanup of aging records.
+- Triggering report jobs without opening multiple tools.
+- Capturing operational output for handoff and incident notes.
 
 ## Prerequisites
 
 - Python 3.9+
-- PowerShell 5.1+ (for the archive script)
+- PowerShell 5.1+ (for the SharePoint/archive script)
 - Google Chrome (for Selenium-driven report automation)
 
 Optional dependency for SharePoint operations:
@@ -21,7 +27,7 @@ Optional dependency for SharePoint operations:
 Install-Module -Name PnP.PowerShell -Scope CurrentUser
 ```
 
-## Quick start
+## Installation
 
 ```bash
 git clone <your-repo-url>
@@ -32,14 +38,21 @@ python -m venv venv
 # macOS/Linux
 source venv/bin/activate
 pip install flask selenium
+```
+
+## Running locally
+
+Start the web application:
+
+```bash
 python app.py
 ```
 
-Open:
+Open the UI at:
 
 - `http://localhost:5000`
 
-Optional status refresh:
+Optional: refresh status data manually:
 
 ```bash
 python check_health.py
@@ -58,16 +71,16 @@ Update these files for your environment:
   - Report name
   - Download directory
 
-## Deployment and security notes
+## Security and deployment guidance
 
-This tool executes host-level commands. Keep it behind trusted network boundaries and add authentication/authorization controls before broad deployment.
+This tool executes host-level commands. Keep it behind trusted network boundaries and add authentication/authorization controls before broader deployment.
 
-Recommended controls:
+Recommended controls for enterprise environments:
 
 - Restrict network access (private subnet / VPN / internal gateway).
 - Run with least-privileged service accounts.
 - Centralize logs and audit script execution.
-- Store secrets in environment variables or a secrets manager.
+- Store secrets in environment variables or a secrets manager (not source files).
 
 ## Windows EXE distribution
 
