@@ -7,7 +7,7 @@ A lightweight web console for running operations automations and monitoring serv
 - **Centralized task execution** for recurring operational scripts.
 - **Live status visibility** for connected upstream systems.
 - **Structured runtime logging** in the browser UI.
-- **Reference automations** for content cleanup and report generation.
+- **Reference automations** for SharePoint cleanup and report generation.
 
 ## Typical use cases
 
@@ -18,7 +18,7 @@ A lightweight web console for running operations automations and monitoring serv
 ## Prerequisites
 
 - Python 3.9+
-- PowerShell 5.1+ (for the SharePoint/archive script)
+- PowerShell 5.1+ (for the SharePoint script)
 - Google Chrome (for Selenium-driven report automation)
 
 Optional dependency for SharePoint operations:
